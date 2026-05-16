@@ -13,81 +13,16 @@
         "--share=ipc",
         "--device=dri",
         "--socket=x11",
-        "--socket=session-bus",
-        "--filesystem=xdg-run/pipewire-0",
-        "--talk-name=org.kde.StatusNotifierWatcher",
-        "--talk-name=org.freedesktop.Notifications",
-        "--talk-name=org.freedesktop.secrets"
+        "--socket=session-bus"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin",
         "env": {
-            "CARGO_HOME": "/app/cargo-home",
+            "CARGO_HOME": "/run/build/Eventix/cargo",
             "CARGO_NET_OFFLINE": "true"
         }
     },
     "modules": [
-        {
-            "name": "cargo-vendor",
-            "sources": [
-                "cargo-sources.json"
-            ],
-            "buildsystem": "simple",
-            "build-commands": [
-                "mkdir -p /app/cargo-vendor",
-                "cp -r cargo/vendor/. /app/cargo-vendor/"
-            ]
-        },
-        {
-            "name": "Eventix",
-            "buildsystem": "simple",
-            "build-commands": [
-                "mkdir -p .cargo",
-                "echo '[source.crates-io]' > .cargo/config.toml",
-                "echo 'replace-with = \"vendored-sources\"' >> .cargo/config.toml",
-                "echo '[source.vendored-sources]' >> .cargo/config.toml",
-                "echo 'directory = \"/app/cargo-vendor\"' >> .cargo/config.toml",
-                "cargo build --release",
-                "mkdir -p /app/build-artifacts",
-                "cp target/release/eventix /app/build-artifacts/",
-                "cp target/release/eventix-app /app/build-artifacts/",
-                "cp target/release/eventix-import /app/build-artifacts/",
-                "cp target/release/eventix-keyring /app/build-artifacts/",
-                "install -Dm755 /app/build-artifacts/eventix -t /app/bin/",
-                "install -Dm755 /app/build-artifacts/eventix-app -t /app/bin/",
-                "install -Dm755 /app/build-artifacts/eventix-import -t /app/bin/",
-                "install -Dm755 /app/build-artifacts/eventix-keyring -t /app/bin/",
-                "rm -rf /app/build-artifacts",
-                "install -Dm644 flatpak/io.github.hrniels.Eventix.desktop -t /app/share/applications/",
-                "install -Dm644 flatpak/io.github.hrniels.Eventix-Import.desktop -t /app/share/applications/",
-                "install -Dm644 data/icons/scalable.svg /app/share/icons/hicolor/scalable/apps/io.github.hrniels.Eventix.svg",
-                "install -Dm644 data/icons/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.hrniels.Eventix.png",
-                "install -Dm644 data/icons/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.hrniels.Eventix.png",
-                "install -Dm644 data/icons/64x64.png /app/share/icons/hicolor/64x64/apps/io.github.hrniels.Eventix.png",
-                "install -Dm644 data/icons/48x48.png /app/share/icons/hicolor/48x48/apps/io.github.hrniels.Eventix.png",
-                "install -Dm644 data/icons/index.theme /app/share/icons/hicolor/index.theme",
-                "install -Dm644 flatpak/io.github.hrniels.Eventix.metainfo.xml -t /app/share/metainfo/",
-                "install -Dm644 LICENSE -t /app/share/licenses/io.github.hrniels.Eventix/eventix",
-                "mkdir -p /app/share/io.github.hrniels.Eventix/locale",
-                "mkdir -p /app/share/io.github.hrniels.Eventix/static",
-                "mkdir -p /app/share/io.github.hrniels.Eventix/icons",
-                "cp -r data/locale /app/share/io.github.hrniels.Eventix",
-                "cp -r data/static /app/share/io.github.hrniels.Eventix",
-                "cp -r data/icons /app/share/io.github.hrniels.Eventix",
-                "gtk-update-icon-cache /app/share/icons/hicolor",
-                "rm -rf /app/cargo-vendor",
-                "rm -rf /app/cargo-home"
-            ],
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://github.com/hrniels/eventix.git",
-                    "commit": "746c1e3ba4d2e3c4a85b20d42c4a0887fb4e24c6",
-                    "tag": "v1.0.5",
-                    "disable-submodules": true
-                }
-            ]
-        },
         "python-sources.json",
         {
             "name": "vdirsyncer",
@@ -115,7 +50,6 @@
                 }
             },
             "build-commands": [
-                "export PATH=/usr/lib/sdk/openjdk/bin:$PATH",
                 "mvn --offline install -Dmaven.repo.local=flatpak/java-deps",
                 "ant prepare-dist",
                 "install -Dm755 dist/davmail /app/bin/davmail",
@@ -148,6 +82,43 @@
                     "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9+9/OpenJDK17U-jre_x64_linux_hotspot_17.0.9_9.tar.gz",
                     "sha256": "c37f729200b572884b8f8e157852c739be728d61d9a1da0f920104876d324733"
                 }
+            ]
+        },
+        {
+            "name": "Eventix",
+            "buildsystem": "simple",
+            "build-commands": [
+                "cargo build --release",
+                "install -Dm755 target/release/eventix -t /app/bin/",
+                "install -Dm755 target/release/eventix-app -t /app/bin/",
+                "install -Dm755 target/release/eventix-import -t /app/bin/",
+                "install -Dm755 target/release/eventix-keyring -t /app/bin/",
+                "install -Dm644 flatpak/io.github.hrniels.Eventix.desktop -t /app/share/applications/",
+                "install -Dm644 flatpak/io.github.hrniels.Eventix-Import.desktop -t /app/share/applications/",
+                "install -Dm644 data/icons/scalable.svg /app/share/icons/hicolor/scalable/apps/io.github.hrniels.Eventix.svg",
+                "install -Dm644 data/icons/256x256.png /app/share/icons/hicolor/256x256/apps/io.github.hrniels.Eventix.png",
+                "install -Dm644 data/icons/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.hrniels.Eventix.png",
+                "install -Dm644 data/icons/64x64.png /app/share/icons/hicolor/64x64/apps/io.github.hrniels.Eventix.png",
+                "install -Dm644 data/icons/48x48.png /app/share/icons/hicolor/48x48/apps/io.github.hrniels.Eventix.png",
+                "install -Dm644 data/icons/index.theme /app/share/icons/hicolor/index.theme",
+                "install -Dm644 flatpak/io.github.hrniels.Eventix.metainfo.xml -t /app/share/metainfo/",
+                "install -Dm644 LICENSE -t /app/share/licenses/io.github.hrniels.Eventix/eventix",
+                "mkdir -p /app/share/io.github.hrniels.Eventix/locale",
+                "mkdir -p /app/share/io.github.hrniels.Eventix/static",
+                "mkdir -p /app/share/io.github.hrniels.Eventix/icons",
+                "cp -r data/locale /app/share/io.github.hrniels.Eventix",
+                "cp -r data/static /app/share/io.github.hrniels.Eventix",
+                "cp -r data/icons /app/share/io.github.hrniels.Eventix"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/hrniels/eventix.git",
+                    "commit": "746c1e3ba4d2e3c4a85b20d42c4a0887fb4e24c6",
+                    "tag": "v1.0.5",
+                    "disable-submodules": true
+                },
+                "cargo-sources.json"
             ]
         }
     ]
