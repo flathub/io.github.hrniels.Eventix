@@ -13,7 +13,8 @@
         "--share=ipc",
         "--device=dri",
         "--socket=x11",
-        "--socket=session-bus"
+        "--socket=session-bus",
+        "--env=PATH=/app/jre/bin:/app/bin:/usr/bin"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin",
@@ -38,6 +39,13 @@
                     "commit": "a83fc9641fb1914e0a9af2f3339961cc7a126f26",
                     "disable-submodules": true
                 }
+            ]
+        },
+        {
+            "name": "openjdk",
+            "buildsystem": "simple",
+            "build-commands": [
+                "/usr/lib/sdk/openjdk/install.sh"
             ]
         },
         {
@@ -66,22 +74,6 @@
                     "disable-submodules": true
                 },
                 "java-sources.json"
-            ]
-        },
-        {
-            "name": "java-runtime",
-            "buildsystem": "simple",
-            "build-commands": [
-                "mkdir -p /app/openjdk",
-                "tar xzf OpenJDK17U-jre_x64_linux_hotspot_17.0.9_9.tar.gz -C /app/openjdk --strip-components=1",
-                "ln -s /app/openjdk/bin/java /app/bin/java"
-            ],
-            "sources": [
-                {
-                    "type": "file",
-                    "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.9+9/OpenJDK17U-jre_x64_linux_hotspot_17.0.9_9.tar.gz",
-                    "sha256": "c37f729200b572884b8f8e157852c739be728d61d9a1da0f920104876d324733"
-                }
             ]
         },
         {
