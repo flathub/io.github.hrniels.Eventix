@@ -12,7 +12,8 @@
         "--share=network",
         "--share=ipc",
         "--device=dri",
-        "--socket=x11",
+        "--socket=wayland",
+        "--socket=fallback-x11",
         "--talk-name=org.kde.StatusNotifierWatcher",
         "--env=PATH=/app/jre/bin:/app/bin:/usr/bin"
     ],
@@ -86,7 +87,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/hrniels/eventix.git",
-                    "commit": "0c84f08c2221f872c647bbed44e41b621f088918",
+                    "commit": "379c11ac8cf440c3a4d047945ef9f3618a41c02e",
                     "disable-submodules": true
                 },
                 "cargo-sources.json"
