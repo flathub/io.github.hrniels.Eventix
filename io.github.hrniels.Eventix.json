@@ -87,7 +87,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/hrniels/eventix.git",
-                    "commit": "0878c303877f6ef67f5e77318041943b31ba1528",
+                    "commit": "3c035681872a38c413609245d5be368bdc911b12",
                     "disable-submodules": true
                 },
                 "cargo-sources.json"
